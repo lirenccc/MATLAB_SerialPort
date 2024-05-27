@@ -25,26 +25,18 @@ disp("配置完成");
 %% 回调函数
 configureCallback(SerialObj,"terminator",@readSerialData);
 
-% 采集数据点的数量
-while(1)
-    if(size(SerialObj.UserData.Result, 1) >= 200)
-        result = SerialObj.UserData.Result;
-        break
-    end
-end
-
-delete(SerialObj);
-
 
 %%
 % 回调函数
 function readSerialData(src, ~)
-    data = read(src, 20, "uint8");
-    src.UserData.Data = data;
-    press = Process(src);
-    disp(size(src.UserData.Result, 1)+1);
-    disp(press);
-    src.UserData.Result = [src.UserData.Result; press];
+    if(size(src.UserData.Result, 1) < 200)
+        data = read(src, 20, "uint8");
+        src.UserData.Data = data;
+        press = Process(src);
+        disp(size(src.UserData.Result, 1)+1);
+        disp(press);
+        src.UserData.Result = [src.UserData.Result; press];
+    end
 end
  
 % 数据处理
